@@ -10,9 +10,15 @@ class ProductoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::all();
+        // Verificar si se está filtrando por stock alto
+        if ($request->has('stock_alto') && $request->stock_alto == '1') {
+            $productos = Producto::where('stock', '>', 5)->get();
+        } else {
+            $productos = Producto::all();
+        }
+        
         return view('productos.index', compact('productos'));
     }
 
@@ -86,4 +92,5 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')
             ->with('success', 'Producto eliminado exitosamente');
     }
+
 }
