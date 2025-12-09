@@ -34,6 +34,12 @@
             border-left: 3px solid #1a1a1a;
             font-size: 14px;
         }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -48,10 +54,23 @@
         .btn-primary {
             background-color: #1a1a1a;
             color: white;
-            margin-bottom: 32px;
         }
         .btn-primary:hover {
             background-color: #000;
+        }
+        .btn-filter {
+            background-color: transparent;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+            padding: 10px 20px;
+        }
+        .btn-filter:hover {
+            border-color: #1a1a1a;
+        }
+        .btn-filter.active {
+            background-color: #1a1a1a;
+            color: white;
+            border-color: #1a1a1a;
         }
         .btn-edit {
             background-color: transparent;
@@ -118,6 +137,10 @@
         .stock {
             color: #666;
         }
+        .stock.high {
+            color: #2e7d32;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -130,7 +153,18 @@
             </div>
         @endif
 
-        <a href="{{ route('productos.create') }}" class="btn btn-primary">Nuevo producto</a>
+        <div class="top-bar">
+            <a href="{{ route('productos.create') }}" class="btn btn-primary">Nuevo producto</a>
+            
+            <div>
+                <a href="{{ route('productos.index') }}" class="btn btn-filter {{ !request('stock_alto') ? 'active' : '' }}">
+                    Todos
+                </a>
+                <a href="{{ route('productos.index', ['stock_alto' => '1']) }}" class="btn btn-filter {{ request('stock_alto') ? 'active' : '' }}">
+                    Stock Alto
+                </a>
+            </div>
+        </div>
 
         <table>
             <thead>
@@ -149,7 +183,7 @@
                         <td>{{ $producto->id }}</td>
                         <td>{{ $producto->nombre }}</td>
                         <td class="price">${{ number_format($producto->precio, 2) }}</td>
-                        <td class="stock">{{ $producto->stock }}</td>
+                        <td class="stock {{ $producto->stock > 5 ? 'high' : '' }}">{{ $producto->stock }}</td>
                         <td>{{ $producto->categoria }}</td>
                         <td>
                             <div class="actions">
